@@ -1,4 +1,4 @@
-# Super-resolving Herschel - a deep learning based deconvolution and denoising technique I.
+# DeepSPIRE.
 
 **TensorFlow Implementation**
 
