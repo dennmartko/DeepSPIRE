@@ -49,11 +49,30 @@ source venv/bin/activate
 ```
 
 Main requirements:
-- Python 3.8-3.12
+- Python 3.10-3.12
+- pySIDES (for data preparation)
+- TensorFlow 2.2.x (GPU version required)
+- For Training: NVIDIA GPU with at least 40GB VRAM
+- For Inference: NVIDIA GPU with at least 8GB VRAM
+
+DeepSPIRE uses TensorFlow with GPU acceleration. To ensure proper GPU support, you need a compatible NVIDIA GPU, CUDA Toolkit, and cuDNN installed on your system. For more details on installing CUDA and cuDNN, see the official NVIDIA guides and TensorFlow GPU setup.
 
 ## 3. Install dependencies & DeepSPIRE
 ```bash
 pip install -r requirements.txt
 pip install -e .
 ```
+
+## ♻️ Reproducing results
+
+### 📂 Data Preparation
+1. Download the pySIDES Uchuu dataset from https://data.lam.fr/sides/search/dataset. We used all catalogs upto and including tile_6_8.
+2. Use pySIDES to generate simulated catalogs containing Herschel 250, 350 and 500 μm and Spitzer MIPS 24 μm fluxes as well as the source coordinates. Follow the instructions in the pySIDES documentation: https://gitlab.lam.fr/mbethermin/sides-public-release.
+3. Download the SHARK lightcone catalogs (Private communication with A. Lagos). One can also train with only the Uchuu dataset from pySIDES.
+4. 
+
+
+
+
+Alternative symbols you can use: ♻️  🔁  🔬  ✅  🧪
 
