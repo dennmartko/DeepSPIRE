@@ -1,4 +1,4 @@
-# DeepSPIRE.
+# DeepSPIRE
 
 **TensorFlow Implementation**
 
@@ -13,12 +13,14 @@ Aims. Dusty star-forming galaxies (DSFG) dominate the far-infrared (FIR) and sub
 dish surveys at these wavelengths suffer from poor angular resolution, making identifications of multi-wavelength counterparts diffi-
 cult. Prior-driven deblending techniques require extensive fine-tuning and struggle to process large fields. This work aims to develop
 a fast and reliable deep-learning based deconvolution and denoising super-resolution (SR) technique.
+
 Methods. We employ a transformer neural network to improve the resolution of the Herschel/SPIRE 500 μm observations by a
 factor of 4.5, with input comprised of Spitzer/MIPS 24μm and Herschel/SPIRE 250, 350, 500μm images. The network was trained on
 simulations from SIDES and SHARK. To mimic realistic observations, we injected instrumental noise into the input simulated images,
 while keeping the target images noise-free to enhance the de-noising capabilities of our method. We evaluated the performance of our
 method on simulated test sets and real JCMT/SCUBA-2 450 μm observations in the COSMOS field which have superior resolution
 compared to Herschel.
+
 Results. Our SR method achieves an inference time of ∼ 1s/deg2 on consumer-grade GPUs, much faster than traditional deblending
 techniques. Using the simulation test sets, we show that fluxes of the extracted sources from the super-resolved image are accurate
 to within 5% for sources with an intrinsic flux ≳ 8 mJy, which is a substantial improvement compared to blind extraction on the
