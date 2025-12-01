@@ -1,0 +1,17 @@
+README.md
+setup.py
+DeepSPIRE.egg-info/PKG-INFO
+DeepSPIRE.egg-info/SOURCES.txt
+DeepSPIRE.egg-info/dependency_links.txt
+DeepSPIRE.egg-info/top_level.txt
+scripts/__init__.py
+scripts/models/__init__.py
+scripts/preprocess/DataMerge.py
+scripts/preprocess/__init__.py
+scripts/preprocess/gen_sim_data.py
+scripts/preprocess/process_simulated_catalogs.py
+scripts/training/__init__.py
+scripts/utils/__init__.py
+scripts/utils/file_utils.py
+scripts/utils/preprocess_utils.py
+scripts/utils/source_extraction_utils.py
