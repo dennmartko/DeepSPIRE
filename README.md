@@ -112,7 +112,7 @@ The data path pointing towards the dataset needs to point to ``output_dataset_di
 
 2. Run the training script in the ``scripts/train/`` folder:
 ```bash
-python train.py --config configs/train/SwinUnet/TrainConfig.yaml
+python3 train.py --config configs/train/SwinUnet/TrainConfig.yaml
 ```
 This will start the training and create a new results folder in ``results/SwinUnet/{run_name}`` where the model checkpoints, logs and training history will be saved. Training can always be resumed by using the same `run_name` in the config file. It will automatically load the latest checkpoint and continue training. It will stop once the early stopping criteria is met or the maximum number of epochs is reached. Training the model with the default configuration requires a GPU with at least 40GB VRAM and 60-100 GB of RAM. Logs are time-stamped. During training, the script will make periodic plots of the training and validation loss curves as well as prediction examples on the validation set. These will be saved in the results folder.
 
@@ -120,34 +120,56 @@ This will start the training and create a new results folder in ``results/SwinUn
 
 The following steps show how to evaluate the trained DeepSPIRE model on the simulated test set to reproduce the results from the paper.
 
-Evaluation requires a truth catalog of the test set, a SR catalog extracted from the super-resolved test images and an ideal target catalog extracted from the noise-free target test images.
+Evaluation requires a truth catalog of the test set, a SR catalog extracted from the super-resolved test images, a source catalog extracted from the noise-free target test images and one extracted from the native 500 μm test images. 
 
-1. Evalua
+1. First, create the input catalog of the test set by running the script ``scripts/evaluate/get_input_test_catalog.py``. Modify the hard-coded paths in the script as needed. This will create the input test catalog (.CSV) in the specified output directory. Note, that this script uses flux cuts to remove extremely faint sources from the catalog in order to lower file size. The default flux cuts do not affect the results in the paper per definition but can be modified if needed. The script uses parallel processing to speed up the catalog creation. Start with a small number of processes (the SIDES catalogs are ~1GB each). The final input test catalog will have a size slightly below 1GB.
 
-### 4.  📊 Application of the DeepSPIRE model on the COSMOS field 
+2. Next, extract sources from the native 500 μm test images by running the script ``scripts/evaluate/get_native_source_extracted_catalog.py``. Modify the hard-coded paths in the script as needed. This script will extract sources from the native (with noise) simulated 500 μm datamaps using `photutils` and only store the sources covered by the test images. The extracted catalog ``500_native_catalog.fits`` (.FITS) will be saved in the specified output directory. The specifics on the source extraction methodology is written in the paper or can be inferred from the code. The size of the native catalog is typically around 1 MB.
 
-<!-- Alternative symbols you can use: ♻️  🔁  🔬  ✅  🧪
+3. The final two catalogs, the target and SR test catalog (.FITS) can be created by running (from the root directory):
+```bash
+python3 scripts/evaluate/get_SR_target_catalog.py --config configs/SwinUnet/evaluate/get_SR_target_catalog.yaml
+```
+This script requires a GPU with atleast a VRAM of 8 GB. Lower the inference batch size if OOM erors show up. This does not affect model performance. Do not modify this script, but only the config file. The script will load the chosen trained DeepSPIRE model and run inference on the simulated test set to super-resolve the test images. It will extract sources from both the target and super-resolved images. The target catalog ``500SR_target_catalog.fits `` is stored in the specified output directory. The SR catalog is always stored in the results folder of the chosen trained model in ``/results/SwinUnet/{run_name}/testing/simulation_results/500SR_SR_catalog.fits``. The size of both catalogs is typically around 5 MB each.
 
-- Recommended symbols for training (concise meanings)
-    - 🧠 — model / architecture / training procedure
-    - 🧪 — experiments / training runs / ablations
-    - 🔁 — epochs / iterations / data augmentation loops
-    - ⚙️ — configuration / hyperparameters / setup
-    - ⏱️ — runtime / performance / speed
-    - 💾 — checkpoints / saving / weights
-    - ✅ — successful runs / completed steps / validation passed
-    - 📊 — metrics / evaluation / plots
-    - 🚀 — inference / deployment / production
+4. Finally, we evaluate our model by running (from the root directory):
+```bash
+python3 scripts/evaluate/evaluate_simulations.py --config configs/SwinUnet/evaluate/evaluate_simulations.yaml
+```
+This script will generate all the plots shown in the paper for the simulation results including flux reproduction, astrometric accuracy, reliability and completeness as well as the image-based comparisons. Modify the config file as needed to point to the correct catalog paths. The plots will be saved in the results folder of the chosen trained model in ``/results/SwinUnet/{run_name}/testing/simulation_results/``. In order to reproduce the exact results from the paper, do not modify the evaluation script.
 
-- Short usage examples
-    - "### 2. Training 🧠"
-    - "#### Training runs 🧪"
-    - "Configuration ⚙️ — hyperparams, batch size, optimizer"
-    - "Checkpoints 💾 — save every N epochs"
-    - "Results 📊 / ✅"
+### 4.  🔭 Application of the DeepSPIRE model on the COSMOS field & Evaluation with SCUBA-2
 
-- Tips
-    - Keep symbols consistent across headings and lists.
-    - Use 1–2 symbols per section to avoid visual clutter.
-    - Prefer semantic symbols (e.g., 🧪 for experiments) so readers scan quickly. -->
+The following steps show how to apply the trained DeepSPIRE model on the real Spitzer MIPS 24 μm & Herschel SPIRE observations of the COSMOS field and reproduce the results from the paper. This requires the real COSMOS maps as well as SCUBA-2 450 μm imaging + catalog for validation. Moreover, we have to apply background subtraction on the real SPIRE maps before creating a dataset consisting of cutouts. These background maps are computed from the estimated background fits in the XID+ catalogs.
 
+1. Download the Herschel SPIRE 250, 350, 500 μm maps of the COSMOS field from ``https://hedam.lam.fr/HELP/dataproducts/dmu19/dmu19_HerMES/data/``. Select the COSMOS-NEST_image_250/350/500 SMAP fits files. Download the Spitzer MIPS 24 μm map of the COSMOS field from ``https://irsa.ipac.caltech.edu/data/COSMOS/images/spitzer/mips/mips_24_GO3_sci_10.fits``. The SPIRE maps are in units of Jy/beam while the MIPS map is in units of MJy/sr.
+
+2. The SCUBA-2 450 μm COSMOS map and catalog are included in the repository under ``data/SCUBA2/SCS_450.fits`` and ``data/SCUBA2/STUDIES-COSMOS_450um_v20230206.fits``. During paper writing, these were obtained from private communication with the STUDIES team. The paper is now published: ``https://ui.adsabs.harvard.edu/abs/2024ApJ...971..117G/abstract``. The SCUBA-2 450 μm map is in units of mJy/beam.
+
+3. Next, comes preprocessing the real COSMOS maps. Here, we need to correct for unit conversions, color/aperture corrections and background subtraction. To correct the SPIRE and MIPS maps for background, we use the background estimates from the HELP XID+ COSMOS catalog which can be downloaded from ``https://hedam.lam.fr/HELP/dataproducts/dmu26/dmu26_XID+COSMOS2024/Master_Post_Catalogue_MIPS_PACS_SPIRE_SCUBA.fits``. Note, the file size is 15GB. 
+
+Run the notebook ``/scripts/preprocess/correct_obs_data_maps.ipynb``. Modify the hard-coded input and output paths in the notebook as needed. The code expects all observational datamaps to be within a single directory `base_path_datamaps`. The notebook will create different versions of the corrected datamaps based on the method to estimate the background in each pixel. We will use the datamaps with suffix ``interp_bkg_subtracted`` for the rest of the analysis as these were used in the paper. 
+The notebook may take a while to run and ensure enough RAM to load in the XID+ catalog. 
+
+4. We are now ready to create the observational COSMOS dataset. Run the script ``scripts/preprocess/gen_obs_data.py``. Modify the `Config` class in the script to set the input and output directories, classes etc as needed. This script requires that the bounds in sky coordinates of the COSMOS field are defined for the desired purpose. We have two sets of bounds hardcoded in the script: one for the smaller area covered by SCUBA-2 and one for the full 2.2 deg² COSMOS field as defined by the limiting Spitzer MIPS 24 μm coverage. Make sure to comment/uncomment the correct set of bounds in the script as needed. The script will produce similar outputs as the simulated dataset generation script. However, there will only be a `Test` set.
+
+To reproduce the results from the paper, generate two datasets (separate output directories), one for the full COSMOS field and one for the SCUBA-2 covered area. Use the corresponding bounds and for SCUBA-2, make sure the class name is 450 instead of 500 and designate it as target.
+
+
+5. First, we super-resolve the COSMOS Herschel SPIRE 500 μm data covered by the smaller SCUBA-2 footprint. Run (from the root directory):
+```bash
+python3 scripts/evaluate/evaluate_observations.py --config configs/SwinUnet/evaluate/evaluate_observations.yaml
+```
+
+Ensure that the config file contains the 450 class instead of 500 and is designated as the target class. Modify the config file as needed to point to the correct dataset directory and the correct trained model results directory. The script will create the plots (flux reproduction, image comparison) from the paper and stores them in the results folder of the chosen trained model in ``/results/SwinUnet/{run_name}/testing/observation_results/``. 
+
+6. Second, we super-resolve the full COSMOS Herschel SPIRE 500 μm data. We will only create the super-resolved catalog extracted from the super-resolved images. Run (from the root directory):
+```bash
+python3 scripts/evaluate/get_SR_catalog_observations.py --config configs/SwinUnet/evaluate/get_SR_target_catalog_obs.yaml
+```
+
+This script requires a GPU with atleast a VRAM of 8 GB. Lower the inference batch size if OOM erors show up. This does not affect model performance. Do not modify this script, but only the config file. The script will load the chosen trained DeepSPIRE model and run inference on the full COSMOS test set to super-resolve the test images. It will extract sources from the super-resolved images. The SR catalog is always stored in the results folder of the chosen trained model: ``/results/SwinUnet/{run_name}/testing/observation_results/cosmos_SR_catalog.fits``. The size of the SR catalog is typically <1 MB.
+
+7. Using ``/results/SwinUnet/{run_name}/testing/observation_results/cosmos_SR_catalog.fits``, one can now create the (un)corrected 500 μm number counts as shown in the paper. Modify (use the COSMOS SR catalog) and run the notebook ``scripts/evaluate/number_counts.ipynb``. The notebook will create the (un)corrected number counts plots from the paper. The plots will be saved in the same folder [ToDo: specify].
+
+🚀 You have now reproduced all the results from the paper! 🚀
