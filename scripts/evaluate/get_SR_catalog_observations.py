@@ -37,10 +37,10 @@ from deepSPIRE.utils.file_utils import (
 from deepSPIRE.utils.source_extraction_utils import (
     construct_source_catalog
 )
-from models.architectures.UnetResnet34Tr import UnetResnet34Tr
-from models.architectures.UnetResnet34TrNew import UnetResnet34TrNew
-from models.architectures.SwinUnet import swin_unet_2d_base
-from models.architectures.Unet import build_unet
+
+from deepSPIRE.models.UnetResnet34TrNew import UnetResnet34TrNew
+from deepSPIRE.models.SwinUnet import swin_unet_2d_base
+from deepSPIRE.models.Unet import build_unet
 from astropy.table import Table
 
 # Parse arguments
@@ -77,8 +77,6 @@ def initialize_model(config):
     input_shape = tuple(config["model"]["input_shape"])
 
     if model_name == "UnetResnet34Tr":
-        model = UnetResnet34Tr(input_shape, "channels_last")
-    elif ("new" in run_name.lower()) and (model_name == "UnetResnet34Tr"):
         model = UnetResnet34TrNew(input_shape, "channels_last")
         model.build((None,) + tuple(input_shape))
         

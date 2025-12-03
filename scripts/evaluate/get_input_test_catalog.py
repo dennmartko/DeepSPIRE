@@ -165,16 +165,17 @@ if __name__ == '__main__':
     # --- Config        ---
     # --- GLOBAL params ---
     # Paths containing data
-    sim_catalogs_dirs    = ["/mnt/g/data/PhD Projects/SR/sim_catalogs"]                                    #["/mnt/g/data/PhD Projects/SR/PRIMA_cats/PRIMA_SHARK_processed_cats", "/mnt/g/data/PhD Projects/SR/PRIMA_cats/PRIMA_SIDES_uchuu"]
-    test_cutouts_path    = "/mnt/g/data/PhD Projects/SR/shark_sides_mips_spire_smoothed_120sqdeg/Test/500SR"
-    catalog_output_dir   = "/mnt/g/data/PhD Projects/SR/evaluation"
-    catalog_file_name    = "spire_smoothed_test_input_catalog.csv"
-    flux_columns_to_use  = ['SMIPS24', 'SSPIRE500']                                                        #['SPRIMA_2B_coadd'] # Flux columns to include in the resulting input catalog; Will include 'file_id', 'ra', 'dec' by default
-    extra_columns_to_use = ['redshift']                                                                    # Additional columns to include in the resulting input catalog
-    flux_threshold       = [.1e-6, .01e-3]                                                                 # Minimum flux to include source in input catalog corresponding to flux_columns_to_use; in Jy; Use 0 if unsure, keep a tab at file size.
-    CUTOUT_SHAPE         = (256, 256)                                                                      # (ny, nx)
-    max_workers          = 12                                                                              # Number of processes to use. Each process requires at least the equivalent of individual catalogs in memory.
-      # Load all cutout WCS
+    sim_catalogs_dirs    = ["/data/catalogs/"]                                                # List of directories containing simulated catalogs in FITS format that will be scanned for FITS catalogs and processed yielding great flexibility.
+    test_cutouts_path    = "/data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test/500SR"  # Directory containing the test cutouts, use the SR class directory for most accurate WCS
+    catalog_output_dir   = "/data/datasets/"
+    catalog_file_name    = "shark_sides_noisy_test_input_catalog.csv"
+    flux_columns_to_use  = ['SMIPS24', 'SSPIRE500']                                           # Flux columns to include in the resulting input catalog; Will include 'file_id', 'ra', 'dec' by default
+    extra_columns_to_use = ['redshift']                                                       # Additional columns to include in the resulting input catalog
+    flux_threshold       = [.1e-6, .01e-3]                                                    # Minimum flux to include source in input catalog corresponding to flux_columns_to_use; in Jy; Use 0 if unsure, keep a tab at file size.
+    CUTOUT_SHAPE         = (256, 256)                                                         # (ny, nx)
+    max_workers          = 12                                                                 # Number of processes to use. Each process requires at least the equivalent of individual catalogs in memory.
+    
+    # Load all cutout WCS
     wcs_dict = load_cutout_wcs(test_cutouts_path)
 
     # Process each sim catalog in parallel

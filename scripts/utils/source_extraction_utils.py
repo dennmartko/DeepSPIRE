@@ -181,7 +181,7 @@ def create_progress():
     )
     return progress
 
-def construct_source_catalog(images, wcs_dict, fwhm_pix, threshold=2e-3, border_pad=8, N_CPU=10, task_desc=None):
+def construct_source_catalog(images, wcs_dict, fwhm_pix, threshold=2e-3, border_pad=8, N_CPU=10):
 
     results = []
     with ProcessPoolExecutor(max_workers=N_CPU) as executor:

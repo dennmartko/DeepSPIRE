@@ -1,3 +1,8 @@
+'''
+This module implements the Unet architecture from Lauritsen et al (2021) and can be used to compare results. This module is completely reimplemented from scratch but follows the architecture 
+described in their paper: 
+'''
+
 import tensorflow as tf
 from tensorflow.keras.layers import Input, Conv2D, Conv2DTranspose, BatchNormalization, LeakyReLU, Dropout, Activation
 

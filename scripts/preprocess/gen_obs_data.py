@@ -28,18 +28,18 @@ class Config:
     fwhm_l = [5.7, 18.1, 24.9, 36.6, 7.9] # In arcseconds
     hdu_idx_l = [0, 1, 1, 1, 0] # indices of the fits header unit containing the data map. DO NOT CHANGE UNLESS NEEDED.
     class_names = ["24", "250", "350", "500", "450"] # Do not change names, use wavelengths.
-    class_types = ["input", "input", "input", "input", "target"] #["input", "input", "input", "input", "target"]
+    class_types = ["input", "input", "input", "input", "target"] # Either "input" or "target"
 
     # Paths
-    parent_out_dir = r"/mnt/g/data/PhD Projects/SR" # Output directory of data set, change if needed to
+    parent_out_dir = r"/data/datasets" # Output directory of data set, change if needed to
     dataset_dir_name = "cosmos" # Directory name of generated dataset
-    dir_to_data_maps = r"/mnt/g/data/PhD Projects/SR/obs_datamaps" # Path to observation datamaps
+    dir_to_data_maps = r"/data/observation_data" # Path to observation datamaps
 
     # Instrument information
     file_names = ["mips_24_GO3_sci_10_interp_bkg_subtracted.fits", "COSMOS-Nest_image_250_SMAP_v6.0_interp_bkg_subtracted.fits", "COSMOS-Nest_image_350_SMAP_v6.0_interp_bkg_subtracted.fits",
-                    "COSMOS-Nest_image_500_SMAP_v6.0_interp_bkg_subtracted.fits", "SCS_450_corr.fits"] # "SCS_450_corr.fits"
-    instrument_prefixes = ["MIPS24", "SPIRE250", "SPIRE350", "SPIRE500", "SCUBA450"]
-    instrument_names = ["Spitzer MIPS", "Herschel SPIRE", "Herschel SPIRE", "Herschel SPIRE", "JCMT SCUBA-2"]
+                    "COSMOS-Nest_image_500_SMAP_v6.0_interp_bkg_subtracted.fits", "SCS_450_corr.fits"]  
+    # instrument_prefixes = ["MIPS24", "SPIRE250", "SPIRE350", "SPIRE500", "SCUBA450"] # Names for plotting
+    instrument_names = ["Spitzer MIPS", "Herschel SPIRE", "Herschel SPIRE", "Herschel SPIRE", "JCMT SCUBA-2"] # Used for plotting
 
     # Cutout dimensions
     input_cutout_dims = (256, 256)

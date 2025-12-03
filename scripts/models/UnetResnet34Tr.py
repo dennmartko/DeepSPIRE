@@ -1,3 +1,8 @@
+'''
+This is one of the two models we have experimented with before settling on the SwinUNet architecture for DeepSPIRE.
+This model is a U-net CNN architecture with a ResNet34 encoder enhanced with dual attention modules (PCAM and CAM).
+'''
+
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D, BatchNormalization, Input, Dense, LeakyReLU, Flatten, Conv2DTranspose
 

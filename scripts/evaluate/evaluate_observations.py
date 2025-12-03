@@ -26,22 +26,22 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from scipy.ndimage import gaussian_filter
 
 # Project-specific imports
-from scripts.utils.metrics import (
+from deepSPIRE.utils.metrics import (
     calculate_flux_statistics, 
     cross_match_catalogs, 
     construct_matched_catalog
 )
-from scripts.utils.data_loader import (
+from deepSPIRE.utils.data_loader import (
     load_input_data_asarray,
     load_target_data_asarray
 )
-from scripts.utils.file_utils import (
+from deepSPIRE.utils.file_utils import (
     get_main_dir,
     setup_directories,
     create_model_results_subfolder
 )
 
-from scripts.utils.evaluation_plots import (
+from deepSPIRE.utils.evaluation_plots import (
     plot_binned_iqr,
     contourplot_completeness_reliability,
     plot_completeness_reliability,
@@ -51,10 +51,9 @@ from scripts.utils.evaluation_plots import (
 
 )
 
-from models.architectures.UnetResnet34Tr import UnetResnet34Tr
-from models.architectures.UnetResnet34TrNew import UnetResnet34TrNew
-from models.architectures.SwinUnet import swin_unet_2d_base
-from models.architectures.Unet import build_unet
+from deepSPIRE.models.UnetResnet34TrNew import UnetResnet34TrNew
+from deepSPIRE.models.SwinUnet import swin_unet_2d_base
+from deepSPIRE.models.Unet import build_unet
 
 # Configure logger and warnings
 tf.get_logger().setLevel('ERROR')
@@ -94,8 +93,6 @@ def initialize_model(config):
     input_shape = tuple(config["model"]["input_shape"])
 
     if model_name == "UnetResnet34Tr":
-        model = UnetResnet34Tr(input_shape, "channels_last")
-    elif ("new" in run_name.lower()) and (model_name == "UnetResnet34Tr"):
         model = UnetResnet34TrNew(input_shape, "channels_last")
         model.build((None,) + tuple(input_shape))
         
@@ -182,8 +179,6 @@ if __name__ == "__main__":
     df_scuba = scuba_table.to_pandas()
     df_sr = sr_table.to_pandas()
 
-    print(df_scuba.head())
-
     # Define correction factor
     corr_factor = 0.84
 
@@ -205,9 +200,6 @@ if __name__ == "__main__":
     matched_catalog = cross_match_catalogs(df_sr, df_scuba, flux_col_source="S500SR", flux_col_target="scuba_500corr", keep_columns=["S450", "S450_total_err", "file_id"])
     matched_catalog['S500corr'] = matched_catalog['S450'] * corr_factor
     matched_catalog['S500corr_total_err'] = matched_catalog["S450_total_err"] * corr_factor
-
-    print(matched_catalog.head())
-
 
     # Plot the fluxes
     scuba_recovery_plot(matched_catalog, save_path=os.path.join(results_dir, "scuba_recovery_plot.pdf"))
@@ -270,13 +262,10 @@ if __name__ == "__main__":
     print("Mean S500SR/S450:", np.mean(matched_catalog['S500SR']/matched_catalog['S450']))
     print("Median S500SR/S450:", np.median(matched_catalog['S500SR']/matched_catalog['S450']))
 
-
-
-
     print("Mean S500SR/Sscuba500:", np.mean(temp_matched_cat['S500SR']/temp_matched_cat['scuba_500corr']))
     print("Median S500SR/Sscuba500:", np.median(temp_matched_cat['S500SR']/temp_matched_cat['scuba_500corr']))
     print("Mean S500SR/S450:", np.mean(temp_matched_cat['S500SR']/temp_matched_cat['S450']))
     print("Median S500SR/S450:", np.median(temp_matched_cat['S500SR']/temp_matched_cat['S450']))
 
-    # Save the matched catalog as a CSV file in the results directory
-    matched_catalog.to_csv("matched_catalog.csv", index=False)
+    # # Save the matched catalog as a CSV file in the results directory
+    # matched_catalog.to_csv("matched_catalog.csv", index=False)

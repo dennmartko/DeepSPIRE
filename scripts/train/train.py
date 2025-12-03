@@ -6,10 +6,11 @@ from deepSPIRE.utils.data_loader import create_dataset_tf, split_input_labels
 from deepSPIRE.utils.file_utils import get_main_dir, create_model_ckpt_folder, create_log_file, printlog, log_epoch_details, load_training_history, save_training_history, create_model_results_subfolder
 from deepSPIRE.utils.plots import data_debug_plot, display_predictions, plot_history
 
-from deepSPIRE.models.architectures.SwinUnet import swin_unet_2d_base
-from deepSPIRE.models.architectures.UnetResnet34TrNew import UnetResnet34TrNew
-from deepSPIRE.models.architectures.Unet import build_unet 
+from deepSPIRE.models.SwinUnet import swin_unet_2d_base
+from deepSPIRE.models.UnetResnet34TrNew import UnetResnet34TrNew
+from deepSPIRE.models.Unet import build_unet
 from loss_functions import non_adversarial_loss
+
 
 import yaml
 import argparse
@@ -48,8 +49,8 @@ print("NUMBER VAL BATCHES: ", val_num_batches)
 # Plot an image sample for debugging purposes
 inputs, labels = split_input_labels(next(iter(val_ds.take(1))), input_class_names, target_class_names)
 
-save = os.path.join(get_main_dir(), "images/data_samples.jpg")
-data_debug_plot(inputs, labels, input_class_names, target_class_names, save)
+# save = os.path.join(get_main_dir(), "images/data_samples.jpg")
+# data_debug_plot(inputs, labels, input_class_names, target_class_names, save)
 
 # Get model
 model_name = config["model"]["model"]
@@ -58,9 +59,12 @@ model_weights_path, first_run = create_model_ckpt_folder(model_name, run_name)
 input_shape = config["model"]["input_shape"]
 output_shape = config["model"]["output_shape"]
 lr_params = config["training"]["polynomial_lr_schedule"]
+
+# Initialise the model
+## Three models can be selected: UnetResnet34Tr, SwinUnet, Unet
+## The UnetResnet34Tr and Unet models are CNN based and used in experiments prior to settling on the SwinUnet Transformer based architecture for DeepSPIRE.
 if model_name == "UnetResnet34Tr":
     model = UnetResnet34TrNew(tuple(input_shape), "channels_last")
-    # Build the model
     model.build((None,) + tuple(input_shape))
 elif model_name == "SwinUnet":
     filter_num_begin = 96               # number of channels in the first downsampling block; it is also the number of embedded dimensions
