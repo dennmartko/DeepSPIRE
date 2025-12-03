@@ -37,9 +37,9 @@ class Config:
     class_types = ["input", "input", "input", "input", "target"] # input or target type 
     c_wl_l = [24, 250, 350, 500, 500]                            # wavelengths in microns (for plotting)
     # Paths
-    dataset_dir_out = "/mnt/g/data/PhD Projects/SR"
-    dataset_dir_name = "test"
-    dir_to_data_maps = "/mnt/g/data/PhD Projects/SR/sim_datamaps"
+    dataset_dir_out = "/data/datasets"
+    dataset_dir_name = "shark_sides_mips_spire_noisy_120sqdeg"
+    dir_to_data_maps = "/data/simulation_data/datamaps"
     # Instrument information
     instrument_prefixes = ["MIPS24", "SPIRE250", "SPIRE350", "SPIRE500", "SR_SPIRE500"] # prefixes used in map filenames
     instrument_names = ["Spitzer MIPS", "Herschel SPIRE", "Herschel SPIRE", "Herschel SPIRE", "SR Herschel SPIRE"] # Used in plotting

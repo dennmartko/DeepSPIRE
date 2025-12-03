@@ -48,7 +48,7 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-Main requirements:
+Main requirements [ToDo: Check]:
 - Python 3.10-3.12
 - pySIDES (for data preparation)
 - TensorFlow 2.2.x (GPU version required)
@@ -65,10 +65,14 @@ pip install -e .
 
 ## ♻️ Reproducing results
 
+To reproduce the results we provide the data needed that allows one to generate their own datasets, apply our trained model, and evaluate the performance using our evaluation scripts. These evaluation scripts will produce plots similar to those shown in the paper. However, due to random seeding results may slightly differ. We tried our best to fix the seeds and describe the environment in which we have performed our work. 
+
+In the sections below, we will highlight all the steps we have taken to come to our main results and conclusions in the paper. We will highlight where the provided data can be used instead which skips a lot of unnecessary steps when trying to reproduce our results. Nevertheless, please read all the steps to gain a good understanding of the workflow. With the provided data, one can start at step (6) in the Data Preparation section below. 
+
 ### 1. 📂 Data Preparation
 1. Download the pySIDES Uchuu dataset from https://data.lam.fr/sides/search/dataset. We used all catalogs upto and including tile_6_8.
 2. Use pySIDES to generate simulated catalogs containing Herschel 250, 350 and 500 μm and Spitzer MIPS 24 μm fluxes as well as the source coordinates. Follow the instructions in the pySIDES documentation: https://gitlab.lam.fr/mbethermin/sides-public-release.
-3. Download the SHARK lightcone catalogs (Private communication with A. Lagos). One can also train with only the Uchuu dataset from pySIDES.
+3. Download the SHARK lightcone catalogs (Private communication with Claudia Lagos). One can also train with only the Uchuu dataset from pySIDES, although results may differ more.
 4. Run the script ``process_simulated_catalogs.py`` in the ``scripts/preprocess/`` folder to process the SIDES and/or SHARK catalogs into 2 deg² subcatalogs including only the necessary columns. Modify the output directory in the script as needed. This script will create processed catalogs in the specified output directory with an iterator for the suffix, i.e. SHARK_1.
 
 Note: This is one of the few functions where some paths are still hardcoded. The filepath in load_catalog() function and the paths for the SHARK catalogs in load_shark_catalog() function need to be set according to your directory structure. output_dir in the main function also needs to be set.
@@ -82,27 +86,59 @@ Note2: The datamaps should have a naming convention as follows:
 - Target maps: `SIDES_i_SR_SPIRE500_smoothed_Jy_beam.fits`
 where `i` is the catalog number and `BAND` is one of `MIPS24`, `SPIRE250`, `SPIRE350`, or `SPIRE500`.
 
-6. We are now ready to generate the training, validation and test datasets. Run the script ``gen_sim_data.py`` in the ``scripts/preprocess/`` folder. Modify the Config class in the script to set the input and target map directories, output dataset directory, number of samples, patch size, batch size, noise levels etc. as needed. This script can take up to a day to run. The script will create a directory structure as follows:
-```
-output_dataset_dir/
-    SIDES_1/
-        Train/
-            24/24_0.fits
-            24/24_1.fits
-            ...
-            250/
-            350/
-            500/
-            500SR/
-            500SR_mask/
-        Validation/
-            ...
-        Test/
-            ...
-    etc.
-```
+6. You are now ready to generate the training, validation and test dataset. Download the provided data and place the subdirectories into ``data/`` as needed. Then run ``gen_sim_data.py`` in the ``scripts/preprocess/`` folder. Update the `Config` class in the script to specify the input and target map directories, output dataset directory, and noise levels. To reproduce our results, only adjust the paths. The default dataset names and paths are used throughout our scripts. This script may require up to one day to complete and generally runs much faster on consumer CPU's, benifitting the higher clock speeds as MPI is not optimally handled by 3rd party packages.
 
-7. Run the final script ``DataMerge.py`` in the ``scripts/preprocess/`` folder to merge all the individual dataset directories (SIDES_1, SIDES_2, ...) into a single `Train`, `Validation` and `Test` directory. Modify the `base` variable in the script to point to the directory `output_dataset_dir` created in the previous step.
+This script will produce the following directory structure:
+```text
+output_dataset_dir/
+├── SIDES_1/
+│   ├── Train/
+│   │   ├── 24/
+│   │   │   └── 24_0.fits ... 24_N.fits
+│   │   ├── 250/
+│   │   │   └── 250_0.fits ... 250_N.fits
+│   │   ├── 350/
+│   │   │   └── 350_0.fits ... 350_N.fits
+│   │   ├── 500/
+│   │   │   └── 500_0.fits ... 500_N.fits
+│   │   ├── 500SR/
+│   │   │   └── 500SR_0.fits ... 500SR_N.fits
+│   │   └── 500SR_mask/
+│   │       └── 500SR_mask_0.fits ... 500SR_mask_N.fits
+│   ├── Validation/
+│   │   └── ...
+│   └── Test/
+│       └── ...
+├── ...
+├── SIDES_30/
+├── ...
+└── SHARK_30/
+```
+Here, N represents the number of files in each directory. Another, similar, folder will be created which contains figures that can be used to analyse each individual SHARK or SIDES dataset to verify data quality and that the pipeline is working.
+
+7. Run the final script ``DataMerge.py`` in the ``scripts/preprocess/`` folder to merge all the individual dataset directories (SIDES_1, SIDES_2, ...) into a single `Train`, `Validation` and `Test` directory. Ensure the `base` variable in the script points to the directory `output_dataset_dir` created in the previous step. This step is generally fast (~few minutes) when executed on SSD's / NVMe's.
+
+One will now have a dataset file structure looking like this:
+```text
+output_dataset_dir/
+├── Train/
+│   ├── 24/
+│   │   └── 24_0.fits ... 24_M.fits
+│   ├── 250/
+│   │   └── 250_0.fits ... 250_M.fits
+│   ├── 350/
+│   │   └── 350_0.fits ... 350_M.fits
+│   ├── 500/
+│   │   └── 500_0.fits ... 500_M.fits
+│   ├── 500SR/
+│   │   └── 500SR_0.fits ... 500SR_M.fits
+│   └── 500SR_mask/
+│       └── 500SR_mask_0.fits ... 500SR_mask_M.fits
+├── Validation/
+│   └── ...
+└── Test/
+    └── ...
+```
 
 ### 2.  🧠 Training the DeepSPIRE model from the paper
 Our training results are located in the `results/SwinUnet/deepSPIRE_default` folder. 
