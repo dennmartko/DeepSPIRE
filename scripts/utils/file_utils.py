@@ -6,8 +6,8 @@ import pandas as pd
 
 from astropy.io import fits
 
-from deepSPIRE.utils.source_extraction_utils import configure_psf_photometry
-from deepSPIRE.utils.preprocess_utils import generate_image_masks
+from scripts.utils.source_extraction_utils import configure_psf_photometry
+from scripts.utils.preprocess_utils import generate_image_masks
 
 # JSON Encoder class to handle numpy data types
 class JSONEncoder(json.JSONEncoder):

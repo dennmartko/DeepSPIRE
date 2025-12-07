@@ -49,8 +49,8 @@ source venv/bin/activate
 ```
 
 Main requirements [ToDo: Check]:
-- Python 3.10-3.12
-- pySIDES (for data preparation)
+- Python 3.12.x
+- pySIDES (for generating catalogs Python 3.10 is needed as it uses vaex, maps can be generated with 3.12)
 - TensorFlow 2.2.x (GPU version required)
 - For Training: NVIDIA GPU with at least 40GB VRAM
 - For Inference: NVIDIA GPU with at least 8GB VRAM
@@ -58,9 +58,10 @@ Main requirements [ToDo: Check]:
 DeepSPIRE uses TensorFlow with GPU acceleration. To ensure proper GPU support, you need a compatible NVIDIA GPU, CUDA Toolkit, and cuDNN installed on your system. For more details on installing CUDA and cuDNN, see the official NVIDIA guides and TensorFlow GPU setup.
 
 ## 3. Install dependencies & DeepSPIRE
+We use --use-pep517 to avoid deprecation warnings during installation as we still rely on setup.py for packaging.
 ```bash
 pip install -r requirements.txt
-pip install -e .
+pip install -e . --use-pep517
 ```
 
 ## ♻️ Reproducing results

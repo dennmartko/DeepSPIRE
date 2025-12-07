@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
-from deepSPIRE.utils.file_utils import save_input_image_with_header_to_fits, save_target_image_catalog_to_fits
+from scripts.utils.file_utils import save_input_image_with_header_to_fits, save_target_image_catalog_to_fits
 
 # Suppress warnings for cleaner output
 warnings.filterwarnings("ignore")
@@ -34,9 +34,9 @@ class Config:
     class_types = ["input", "input", "input", "input", "target"] # input or target type 
     c_wl_l = [24, 250, 350, 500, 500]                            # wavelengths in microns (for plotting)
     # Paths
-    dataset_dir_out = "/data/datasets"
+    dataset_dir_out = "data/datasets"
     dataset_dir_name = "shark_sides_mips_spire_noisy_120sqdeg"
-    dir_to_data_maps = "/data/simulation_data/datamaps"
+    dir_to_data_maps = "data/simulation_data/datamaps"
     # Instrument information
     instrument_prefixes = ["MIPS24", "SPIRE250", "SPIRE350", "SPIRE500", "SR_SPIRE500"] # prefixes used in map filenames
     instrument_names = ["Spitzer MIPS", "Herschel SPIRE", "Herschel SPIRE", "Herschel SPIRE", "SR Herschel SPIRE"] # Used in plotting
@@ -414,8 +414,8 @@ class ProcessDataSet():
 ##########################
 if __name__ == "__main__":
     # Define prefixes for simulated datamaps 
-    SHARK = [f"SHARK_{i+1}" for i in range(0, 30)]
-    SIDES = [f"SIDES_{i+1}" for i in range(0, 30)]
+    SHARK = [f"SHARK_{i+1}" for i in range(0, 1)]
+    SIDES = [f"SIDES_{i+1}" for i in range(0, 1)]
     
     ## Check the code for "fname" for details on standard formatting of files. CTRL + F --> "fname"
     ## E.g., SIDES_1_SPIRE500_smoothed_Jy_beam.fits

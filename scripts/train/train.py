@@ -2,13 +2,13 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from deepSPIRE.utils.data_loader import create_dataset_tf, split_input_labels
-from deepSPIRE.utils.file_utils import get_main_dir, create_model_ckpt_folder, create_log_file, printlog, log_epoch_details, load_training_history, save_training_history, create_model_results_subfolder
-from deepSPIRE.utils.plots import data_debug_plot, display_predictions, plot_history
+from scripts.utils.data_loader import create_dataset_tf, split_input_labels
+from scripts.utils.file_utils import get_main_dir, create_model_ckpt_folder, create_log_file, printlog, log_epoch_details, load_training_history, save_training_history, create_model_results_subfolder
+from scripts.utils.plots import data_debug_plot, display_predictions, plot_history
 
-from deepSPIRE.models.SwinUnet import swin_unet_2d_base
-from deepSPIRE.models.UnetResnet34TrNew import UnetResnet34TrNew
-from deepSPIRE.models.Unet import build_unet
+from models.SwinUnet import swin_unet_2d_base
+from models.UnetResnet34TrNew import UnetResnet34TrNew
+from models.Unet import build_unet
 from loss_functions import non_adversarial_loss
 
 

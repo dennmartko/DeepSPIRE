@@ -15,7 +15,7 @@ import matplotlib.patches as patches
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
 
-from deepSPIRE.utils.file_utils import save_input_image_with_header_to_fits, save_target_image_catalog_to_fits
+from scripts.utils.file_utils import save_input_image_with_header_to_fits, save_target_image_catalog_to_fits
 
 warnings.filterwarnings("ignore")
 

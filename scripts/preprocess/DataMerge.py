@@ -82,10 +82,10 @@ class DataMerger():
         print("Directory Cleaned!")
 
 # Define dataset base directory containing subdirectories of SHARK_i and SIDES_i
-base = r"/data/datasets/shark_sides_mips_spire_noisy_120sqdeg"
+base = r"data/datasets/shark_sides_mips_spire_noisy_120sqdeg"
 # Define prefixes for simulated datamaps 
-SHARK = [f"SHARK_{i+1}" for i in range(0, 30)]
-SIDES = [f"SIDES_{i+1}" for i in range(0, 30)]
+SHARK = [f"SHARK_{i+1}" for i in range(0, 1)]
+SIDES = [f"SIDES_{i+1}" for i in range(0, 1)]
 
 ## Check the code for "fname" for details on standard formatting of files. CTRL + F --> "fname"
 ## E.g., SIDES_1_SPIRE500_smoothed_Jy_beam.fits
