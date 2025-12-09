@@ -2,7 +2,7 @@
 
 **TensorFlow Implementation**
 
-Paper Link will be updated upon publication.
+Paper Link will be updated upon publication. Data is in the process of uploading and will be made available before 10-12-2025
 
 This repository contains the code and data to reproduce the results of the paper:
 **"Super-resolving Herschel - a deep learning based deconvolution
