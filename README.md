@@ -66,7 +66,7 @@ pip install -e . --use-pep517
 
 ## ♻️ Reproducing results
 
-To reproduce the results we provide the data needed that allows one to generate their own datasets, apply our trained model, and evaluate the performance using our evaluation scripts. These evaluation scripts will produce plots similar to those shown in the paper. However, due to random seeding results may slightly differ. We tried our best to fix the seeds and describe the environment in which we have performed our work. The data can be found [here]([https://example.com](https://sron365-my.sharepoint.com/:u:/g/personal/d_koopmans_sron_nl/IQDX0Ljj0D1cSro3FZ05fFtDAbHb5hZsRgQYY4jphyjwLOU?e=lJdiRx). A Zenodo link will follow soon.
+To reproduce the results we provide the data needed that allows one to generate their own datasets, apply our trained model, and evaluate the performance using our evaluation scripts. These evaluation scripts will produce plots similar to those shown in the paper. However, due to random seeding results may slightly differ. We tried our best to fix the seeds and describe the environment in which we have performed our work. The data can be found [here](https://sron365-my.sharepoint.com/:u:/g/personal/d_koopmans_sron_nl/IQDX0Ljj0D1cSro3FZ05fFtDAbHb5hZsRgQYY4jphyjwLOU?e=lJdiRx). A Zenodo link will follow soon.
 
 In the sections below, we will highlight all the steps we have taken to come to our main results and conclusions in the paper. We will highlight where the provided data can be used instead which skips a lot of unnecessary steps when trying to reproduce our results. Nevertheless, please read all the steps to gain a good understanding of the workflow. With the provided data, one can start at step (6) in the Data Preparation section below. 
 
