@@ -1,0 +1,14 @@
+astropy
+matplotlib
+scipy
+astroml
+scikit-learn
+pandas
+reproject
+photutils
+tensorflow[and-cuda]
+tf_keras
+
+# misc libraries
+rich
+tqdm
