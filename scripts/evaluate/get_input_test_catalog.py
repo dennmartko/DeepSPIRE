@@ -62,16 +62,21 @@ def get_catalog_bounds(ra, dec):
     return ra_bounds, dec_bounds
 
 
-def get_image_bounds_from_wcs(wcs, shape):
+def get_image_bounds_from_wcs(wcs, shape, epsilon=0.5):
     """Given a WCS and image shape (ny, nx), return RA/Dec bounds."""
     ny, nx = shape
 
     # Define corner pixel coordinates
+    ## We need to shrink the corners by an epsilon as there are nummerical precision issues near the edges due to mapmaking & interpolation
+    ## This can cause the cutout footprint to be slightly larger than expected and incorrectly overlap with catalogs adjacent to the actual catalog 
+    ## This will insert sources from neighboring catalogs into the input test catalog
+    ## Note, that this epsilon does not impact the actual source lookup from the correct catalog as we use the WCS for that.
+    ## Epsilon is in pixels, even 1 pixel is completely fine as we know that the cutout is INSIDE the catalog area
     corners_pix = np.array([
-        [0, 0],           # bottom-left
-        [0, nx - 1],      # bottom-right
-        [ny - 1, 0],      # top-left
-        [ny - 1, nx - 1], # top-right
+        [epsilon, epsilon],           # bottom-left
+        [epsilon, nx - 1 - epsilon],      # bottom-right
+        [ny - 1 - epsilon, epsilon],      # top-left
+        [ny - 1 - epsilon, nx - 1 - epsilon], # top-right
     ])
 
     # Convert pixel to sky coordinates
@@ -122,7 +127,7 @@ def cutout_overlaps_catalog(wcs, shape, cat_bounds):
     return bounds_overlap(img_bounds, cat_bounds)
 
 def process_sim_file(fp, wcs_dict):
-    """Return list of DataFrames for all cutouts overlapping this sim file."""
+    """Return list of DataFrames for all cutouts overlapping this catalog."""
     sim_cat = Table.read(fp)
 
     # Calculate the catalog boundary once. Speeds up ~x100.
@@ -136,6 +141,24 @@ def process_sim_file(fp, wcs_dict):
 
         if is_overlap:
             # Convert all catalog coordinates to x, y coordinates using the cutout WCS
+            ## To Do: This can be optimized further by using only the square bounding box of the cutout in RA/Dec
+            ## But for this epsilon needs to be 0.
+            ## This would skip a lot of world2pix transformations.
+
+            # cutout_bounds = get_image_bounds_from_wcs(w_cut, CUTOUT_SHAPE, epsilon=0)
+            # cutout_ra_min, cutout_ra_max = np.min(cutout_bounds[0]), np.max(cutout_bounds[0])
+
+            # ra_max can be > 360 if the cutout crosses the RA=0 line
+            # if cutout_ra_max > 360:
+            #     mask_ra = ( (sim_cat['ra'] >= cutout_ra_min) | (sim_cat['ra'] <= (cutout_ra_max - 360)) )
+            # elif cutout_ra_min < 0:
+            #     mask_ra = ( (sim_cat['ra'] >= (cutout_ra_min + 360)) | (sim_cat['ra'] <= cutout_ra_max) )
+            # else:
+            #     mask_ra = (sim_cat['ra'] >= np.min(cutout_bounds[0])) & (sim_cat['ra'] <= np.max(cutout_bounds[0]))
+
+            # mask_dec = (sim_cat['dec'] >= np.min(cutout_bounds[1])) & (sim_cat['dec'] <= np.max(cutout_bounds[1]))
+            # mask = mask_ra & mask_dec
+
             x, y = w_cut.all_world2pix(sim_cat['ra'], sim_cat['dec'], 0, ra_dec_order=True)
             # Mask the sources that within the cutout region
             mask = (0 <= x) & (x < CUTOUT_SHAPE[1]) & (0 <= y) & (y < CUTOUT_SHAPE[0])
@@ -159,6 +182,7 @@ def process_sim_file(fp, wcs_dict):
             df_sub = df_sub[mask]
             df_sub['file_id'] = file_id
             results.append(df_sub)
+
     return results
 
 if __name__ == '__main__':

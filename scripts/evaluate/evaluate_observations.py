@@ -26,22 +26,22 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from scipy.ndimage import gaussian_filter
 
 # Project-specific imports
-from deepSPIRE.utils.metrics import (
+from utils.metrics import (
     calculate_flux_statistics, 
     cross_match_catalogs, 
     construct_matched_catalog
 )
-from deepSPIRE.utils.data_loader import (
+from utils.data_loader import (
     load_input_data_asarray,
     load_target_data_asarray
 )
-from deepSPIRE.utils.file_utils import (
+from utils.file_utils import (
     get_main_dir,
     setup_directories,
     create_model_results_subfolder
 )
 
-from deepSPIRE.utils.evaluation_plots import (
+from utils.evaluation_plots import (
     plot_binned_iqr,
     contourplot_completeness_reliability,
     plot_completeness_reliability,

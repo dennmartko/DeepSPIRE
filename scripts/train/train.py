@@ -6,17 +6,10 @@ from scripts.utils.data_loader import create_dataset_tf, split_input_labels
 from scripts.utils.file_utils import get_main_dir, create_model_ckpt_folder, create_log_file, printlog, log_epoch_details, load_training_history, save_training_history, create_model_results_subfolder
 from scripts.utils.plots import data_debug_plot, display_predictions, plot_history
 
-<<<<<<< HEAD
 from scripts.models.SwinUnet import swin_unet_2d_base
 from scripts.models.UnetResnet34TrNew import UnetResnet34TrNew
 from scripts.models.Unet import build_unet
-=======
-from models.SwinUnet import swin_unet_2d_base
-from models.UnetResnet34TrNew import UnetResnet34TrNew
-from models.Unet import build_unet
->>>>>>> d41f3aad0d83c5d621e78212ce4b05eabbc44b57
 from loss_functions import non_adversarial_loss
-
 
 import yaml
 import argparse
