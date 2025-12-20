@@ -130,8 +130,6 @@ sr_config = {"250SR": {"FWHM": 6.0, "flux_threshold": 2e-3},
                 "350SR": {"FWHM": 6.0, "flux_threshold": 2e-3},
                 "500SR": {"FWHM": 7.9, "flux_threshold": 2e-3},}
 
-border_pad = 8  # pixels; We avoid extracting sources near the border to avoid edge effects
-
 if __name__ == "__main__":
     # Unpack arguments
     args = parse_args()
@@ -160,7 +158,7 @@ if __name__ == "__main__":
                 wcs_dict,
                 sr_config[target_cl]["FWHM"] * 1/np.abs(wcs_dict[0].pixel_scale_matrix[0, 0]*3600),
                 sr_config[target_cl]["flux_threshold"],
-                border_pad=border_pad,
+                border_pad=config["data"]["border_pixel_distance"],
                 N_CPU=config["sys_config"]["n_cpu_cores"],
                 task_desc=f"Extracting source catalog from target images for {target_cl} class...",
             )
@@ -168,7 +166,7 @@ if __name__ == "__main__":
             target_source_catalog.rename(columns={'source_flux': 'source_flux_target'}, inplace=True)
 
             # Store the catalog
-            catalog_filename = f"{target_cl}_target_catalog.fits"
+            catalog_filename = config["data"]["target_catalog_name"]
             catalog_path = os.path.join(config['data']['target_catalog_output_dir'], catalog_filename)
             catalog_table = Table.from_pandas(target_source_catalog)
             catalog_table.write(catalog_path, format='fits', overwrite=True)
@@ -202,7 +200,7 @@ if __name__ == "__main__":
             wcs_dict,
             sr_config[target_cl]["FWHM"] * 1/np.abs(wcs_dict[0].pixel_scale_matrix[0, 0]*3600),
             sr_config[target_cl]["flux_threshold"],
-            border_pad=border_pad,
+            border_pad=config["data"]["border_pixel_distance"],
             N_CPU=config["sys_config"]["n_cpu_cores"],
             task_desc=f"Extracting source catalog from super-resolved {target_cl.replace('SR', '')} micron images...",
         )
@@ -210,7 +208,7 @@ if __name__ == "__main__":
         sr_source_catalog.rename(columns={'source_flux': f'S{target_cl}'}, inplace=True)
 
         # Store the catalog
-        catalog_filename = f"{target_cl}_SR_catalog.fits"
+        catalog_filename = config["data"]["SR_catalog_name"]
         catalog_path = os.path.join(sim_results_dir, catalog_filename)
         catalog_table = Table.from_pandas(sr_source_catalog)
         catalog_table.write(catalog_path, format='fits', overwrite=True)

@@ -67,22 +67,28 @@ def get_catalog_bounds(ra, dec):
     return ra_bounds, dec_bounds
 
 
-def get_image_bounds_from_wcs(wcs, shape):
+def get_image_bounds_from_wcs(wcs, shape, epsilon=0.5):
     """Given a WCS and image shape (ny, nx), return RA/Dec bounds."""
     ny, nx = shape
 
     # Define corner pixel coordinates
+    ## We need to shrink the corners by an epsilon as there are nummerical precision issues near the edges due to mapmaking & interpolation
+    ## This can cause the cutout footprint to be slightly larger than expected and incorrectly overlap with catalogs adjacent to the actual catalog 
+    ## This will insert sources from neighboring catalogs into the input test catalog
+    ## Note, that this epsilon does not impact the actual source lookup from the correct catalog as we use the WCS for that.
+    ## Epsilon is in pixels, even 1 pixel is completely fine as we know that the cutout is INSIDE the catalog area
     corners_pix = np.array([
-        [0, 0],           # bottom-left
-        [0, nx - 1],      # bottom-right
-        [ny - 1, 0],      # top-left
-        [ny - 1, nx - 1], # top-right
+        [epsilon, epsilon],           # bottom-left
+        [epsilon, nx - 1 - epsilon],      # bottom-right
+        [ny - 1 - epsilon, epsilon],      # top-left
+        [ny - 1 - epsilon, nx - 1 - epsilon], # top-right
     ])
 
     # Convert pixel to sky coordinates
-    sky_coords = wcs.pixel_to_world(corners_pix[:, 1], corners_pix[:, 0])
-    ra = normalize_ra(sky_coords.ra.deg)
-    dec = sky_coords.dec.deg
+    sky_coords = wcs.all_pix2world(corners_pix[:, 1], corners_pix[:, 0], 0)
+    # print(sky_coords)
+    ra = normalize_ra(sky_coords[0])
+    dec = sky_coords[1]
 
     return get_catalog_bounds(ra, dec)
 
@@ -275,13 +281,12 @@ def get_native_source_extracted_catalog(data_maps_dirs: list, wcs_cut: dict, ban
         else:
             print(f"No sources found for band {band}.")
 
-
 if __name__ == '__main__':
     # --- Config ---
     # Paths containing data
     test_cutouts_path  = "/data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test/500SR"  # Directory containing the test cutouts, use the SR class directory for most accurate WCS
     catalog_output_dir = "/data/datasets/"                                                  # Directory to save the output catalogs    
-    data_maps_dirs     = ["/data/simulation_data/sim_datamaps"]                             # List of directories containing simulated data maps in FITS format that will be scanned for FITS data maps and processed yielding great flexibility.
+    data_maps_dirs     = ["/data/simulation_data/datamaps"]                                 # List of directories containing simulated data maps in FITS format that will be scanned for FITS data maps and processed yielding great flexibility.
     CUTOUT_SHAPE       = (256, 256)                                                         # (ny, nx)
 
     # Indicate for which bands a catalog should be calculated
