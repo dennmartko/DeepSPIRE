@@ -214,11 +214,11 @@ python3 scripts/evaluate/get_SR_catalog_observations.py --config configs/SwinUne
 
 This script requires a GPU with atleast a VRAM of 8 GB. Again, lower the inference batch size if OOM erors occur. Do not modify this script, but only the config file. The script will load the chosen trained deepSPIRE model and super-resolve the full COSMOS dataset. Finally, it will extract sources from the super-resolved images. The SR catalog is always stored in the results folder of the chosen trained model: ``/results/SwinUnet/{run_name}/testing/observation_results/{dataset_dir}_SR_catalog.fits`` where `datset_dir` is the name of the chosen dataset directory in step (4). The size of the SR catalog is typically <1 MB.
 
-Note, we do not ignore sources extracted near the image border here as `border_pad = 0`.
+Note, we do not ignore sources extracted near the image border here as `border_pixel_distance = 0`.
 
 7. Using ``/results/SwinUnet/{run_name}/testing/observation_results/{dataset_dir}_SR_catalog.fits``, one can now create the (un)corrected 500 μm number counts as shown in the paper. Modify (use the COSMOS SR catalog) and run the notebook ``scripts/evaluate/number_counts.ipynb``. The notebook will create the (un)corrected number counts plots from the paper. The plots will be saved in the same folder as the script.
 
 Note: This notebook requires the XID+ COSMOS catalog as it is used in the comparison plots. Make sure you have downloaded this catalog as mentioned in step (3) above and placed it in the correct directory.
-Note2: To calculate the correct number counts, you need to make another test input catalog (from simulations) but without any restrictions on extracting sources near the image border, i.e. `border_pad = 0`.
+Note2: To calculate the correct number counts, you need to make another target input catalog (from simulations) but without any restrictions on extracting sources near the image border, i.e. `border_pixel_distance = 0`.
 
 🚀 You have now reproduced all the results from the paper! 🚀
