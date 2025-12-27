@@ -12,10 +12,10 @@ data:
   # Data specific settings, change to needs.
   # SR catalog path is inferred from model and run name
   # For super-resolving all SPIRE bands, variables can be changed to a list or the catalogs contain multiple columns
-  test_dataset_path: "/data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test"
-  input_catalog_path: "/data/datasets/shark_sides_noisy_test_input_catalog.csv"
-  native_catalog_path: "/data/datasets/SPIRE500_native_catalog.fits"
-  target_catalog_path: "/data/datasets/500SR_target_catalog.fits"
+  test_dataset_path: "data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test"
+  input_catalog_path: "data/datasets/shark_sides_noisy_test_input_catalog.csv"
+  native_catalog_path: "data/datasets/SPIRE500_native_catalog.fits"
+  target_catalog_path: "data/datasets/500SR_target_catalog.fits"
   test_batch_size: 32 # Batch size for test data, can be larger than train batch size
   input: ["24", "250", "350", "500"]  # class names
   target: ["500SR"]  # class names

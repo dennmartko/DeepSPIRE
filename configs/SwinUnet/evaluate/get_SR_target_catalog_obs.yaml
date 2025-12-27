@@ -10,7 +10,7 @@ sys_config:
 
 data:
   # Data specific settings, change to needs.
-  test_dataset_path: "/data/datasets/cosmos_spitzer_spire/Test"
+  test_dataset_path: "data/datasets/cosmos_spitzer_spire/Test"
   test_batch_size: 36 # Batch size for test data, can be larger than train batch size
   input: ["24", "250", "350", "500"]  # class names
   target: ["500SR"]  # class names

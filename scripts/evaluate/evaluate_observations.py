@@ -26,29 +26,28 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from scipy.ndimage import gaussian_filter
 
 # Project-specific imports
-from utils.metrics import (
+from scripts.utils.metrics import (
     calculate_flux_statistics, 
     cross_match_catalogs, 
     construct_matched_catalog
 )
-from utils.data_loader import (
+from scripts.utils.data_loader import (
     load_input_data_asarray,
     load_target_data_asarray
 )
-from utils.file_utils import (
+from scripts.utils.file_utils import (
     get_main_dir,
     setup_directories,
     create_model_results_subfolder
 )
 
-from utils.evaluation_plots import (
+from scripts.utils.evaluation_plots import (
     plot_binned_iqr,
     contourplot_completeness_reliability,
     plot_completeness_reliability,
     pos_flux_plot,
     plot_image_grid,
     scuba_recovery_plot,
-
 )
 
 from scripts.models.UnetResnet34TrNew import UnetResnet34TrNew

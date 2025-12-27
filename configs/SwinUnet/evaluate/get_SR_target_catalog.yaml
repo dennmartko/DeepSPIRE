@@ -10,8 +10,8 @@ sys_config:
 
 data:
   # Data specific settings, change to needs.
-  test_dataset_path: "/data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test"
-  target_catalog_output_dir: "/data/datasets"
+  test_dataset_path: "data/datasets/shark_sides_mips_spire_noisy_120sqdeg/Test"
+  target_catalog_output_dir: "data/datasets"
   target_catalog_name: "500SR_target_catalog.fits"  # Name of the target catalog to be saved in target_catalog_output_dir
   SR_catalog_name: "500SR_SR_catalog.fits" # Name of the super-resolved catalog to be saved in the results folder of the model
   border_pixel_distance: 8  # Number of pixels from image border to exclude sources

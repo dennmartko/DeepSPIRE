@@ -171,8 +171,3 @@ def make_maps(cat, params_maps, params_sides):
                 save_map(filename, map_temp, map_prop_dict, filter_name, 'MJy/sr', 0, params_maps['sides_cat_path'])
     #embed()
     #crash
-
-            
-
-
-
