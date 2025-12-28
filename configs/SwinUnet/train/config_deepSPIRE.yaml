@@ -14,6 +14,6 @@ training:
 
 data:
   # Data specific settings, change to needs.
-  data_path: "/datasets/shark_sides_mips_spire_noisy_120sqdeg" # Path to the dataset containing Train, Validation and Test folders
+  data_path: "data/datasets/shark_sides_mips_spire_noisy_120sqdeg" # Path to the dataset containing Train, Validation and Test folders
   input: ["24", "250", "350", "500"]  # class names
   target: ["500SR"]  # class names

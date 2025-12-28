@@ -145,12 +145,12 @@ output_dataset_dir/
 ### 2.  🧠 Training the DeepSPIRE model from the paper
 Use the previously generated dataset located at ``output_dataset_dir`` to train the DeepSPIRE model. Use our provided training configuration to reproduce the training from the paper. Given that training introduces randomness, results may slightly differ. To reproduce our results from the paper as much as possible, you can use our trained model located in ``results/SwinUnet/deepSPIRE_default`` and skip this training section.
 
-1. Modify and check the training configuration file located at ``configs/train/SwinUnet/config_deepSPIRE.yaml`` as needed. The default configuration is the one used in the paper.
+1. Modify and check the training configuration file located at ``configs/SwinUnet/train/config_deepSPIRE.yaml`` as needed. The default configuration is the one used in the paper.
 The data path pointing towards the dataset needs to point to ``output_dataset_dir``. Use a different `run_name` as otherwise it will resume training using our trained model.
 
 2. Run the training script in the ``scripts/train/`` folder:
 ```bash
-python3 scripts/train/train.py --config configs/train/SwinUnet/config_deepSPIRE.yaml
+python3 scripts/train/train.py --config configs/SwinUnet/train/config_deepSPIRE.yaml
 ```
 This will start the training and create a new results folder in ``results/SwinUnet/{run_name}`` where the model checkpoints, logs and training history will be saved. Training can always be resumed by using the same `run_name` in the config file. It will automatically load the latest checkpoint and continue training. It will stop once the early stopping criteria is met or the maximum number of epochs is reached. Training the model with the default configuration requires a GPU with at least 40GB VRAM and 60-100 GB of RAM. Logs are time-stamped. During training, the script will refresh a plot of the training and validation loss curves as well as provide prediction examples on the validation set. These will be saved in the results folder.
 
